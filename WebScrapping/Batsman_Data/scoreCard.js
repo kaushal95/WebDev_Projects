@@ -2,9 +2,11 @@ let request = require("request");
 let cheerio = require("cheerio");
 let fs = require("fs");
 let path = require("path");
+let xlsx = require("xlsx");
 
+// urls to test the function for single match
 // let url = "https://www.espncricinfo.com/series/ipl-2020-21-1210595/royal-challengers-bangalore-vs-mumbai-indians-10th-match-1216547/full-scorecard";
-// //"https://www.espncricinfo.com/series/ipl-2020-21-1210595/delhi-capitals-vs-mumbai-indians-final-1237181/full-scorecard";
+// let url = "https://www.espncricinfo.com/series/ipl-2020-21-1210595/delhi-capitals-vs-mumbai-indians-final-1237181/full-scorecard";
 // singleScorecard(url);
 function singleScorecard(url){
     request(url, cb);
@@ -18,6 +20,7 @@ function singleScorecard(url){
         }
     }
 }
+// Gets ScoredCard Data for each match and stores in each Players excel
 function getScorecardData(html){
     let searchTool = cheerio.load(html);
     let pwd = process.cwd();
@@ -25,11 +28,9 @@ function getScorecardData(html){
     if(fs.existsSync(dirPath) == false){
         fs.mkdirSync(dirPath);
     }
-    // console.log(pwd);
-
     let matcharray = searchTool(".match-header .name-detail .name-link p");
-    //.status-text
-    let result = searchTool(".status-text>span").text().split("(");
+
+    let result = searchTool(".match-header .status-text>span").text().split("(");
 
     let namedetail = searchTool(".match-header .name-detail");
     let winnningTag = ".espn-icon.icon-games-solid-after.icon-sm.winner-icon";
@@ -40,24 +41,21 @@ function getScorecardData(html){
         winner = searchTool(matcharray[1]).text().trim() + " won the match";
     }
 
-    let headData = ["team_name", "playername", "vanue", "date","opponentTeamName","result","runs","balls","fours","sixes","sr"];
+    let headData = ["Team Name", "Player Name", "Venue", "Date","Opponent Team","Result","Runs","Balls","Fours","Sixes","Strike Rate"];
     let scoreTable = searchTool(".table.batsman");
-    // teamNames = matcharray.attr("alt");
-    // console.log(matcharray.length);
+
     let location = searchTool(".match-info.match-info-MATCH.match-info-MATCH-half-width .description").text().split(", ");
-    // console.log(location);
-    // console.log('```````````````````````````````````````````````');
     for(let i = 0; i < matcharray.length; i++){
-        // console.log('```````````````````````````````````````````````');
-        // console.log(searchTool(matcharray[i]).text().trim());
+
         let tableArray = searchTool(scoreTable[i]).find("td");
-        let teamName = searchTool(matcharray[i]).text().trim()
+        let teamName = searchTool(matcharray[i]).text().trim();
+
+
         let teamPath = path.join(dirPath,teamName); 
         if(fs.existsSync(teamPath) == false){
             fs.mkdirSync(teamPath);
         }
         for(let j = 0; j < tableArray.length; j++){
-            // console.log(searchTool(tableArray[j]).text());
             let lis = [teamName,location[1],location[2]];
             if(i % 2 == 0){
                 lis.push(searchTool(matcharray[1]).text().trim());
@@ -71,49 +69,54 @@ function getScorecardData(html){
             lis.push(winner);
             if(searchTool(tableArray[j]).attr("class") == "batsman-cell text-truncate out" 
             || searchTool(tableArray[j]).attr("class") =="batsman-cell text-truncate not-out"){
-            //     playerName = searchTool(tableArray[j]).text()[0];
-                // console.log(searchTool(tableArray[j]).text());
                 let captAndWckeeper = searchTool(tableArray[j]).text().trim();
                 captAndWckeeper = captAndWckeeper.split("(c)")[0].trim();
                 captAndWckeeper = captAndWckeeper.split("†")[0].trim();
                 lis.splice(1,0,captAndWckeeper);
-                let playerPath = path.join(teamPath,(captAndWckeeper+".json"));
-                // console.log(playerPath);
-                if(fs.existsSync(playerPath) == false){
-                        let data = JSON.stringify(headData);
-                    fs.writeFileSync(playerPath,data);
-                }
-                
-                // lis.push(.split("/[(c),†]+/")
+                let playerPath = path.join(teamPath,(captAndWckeeper+".xlsx"));
                 for(let k = j+2; k < j+9; k++){
-                    // console.log(searchTool(tableArray[k]).text());
                     if(!isNaN(searchTool(tableArray[k]).text().trim())){
                         lis.push(searchTool(tableArray[k]).text().trim())
                     }
                     
                 }
                 lis.pop();
-                let content = fs.readFileSync(playerPath);
-                let jsoncontent = JSON.parse(content);
-                jsoncontent.push(lis);
-                let jsonWritable = JSON.stringify(jsoncontent);
-                fs.writeFileSync(playerPath,jsonWritable);
+                // used Json initiallly than switched to excel
+                // let content = fs.readFileSync(playerPath);
+                // let jsoncontent = JSON.parse(content);
+                // jsoncontent.push(lis);
+                // let jsonWritable = JSON.stringify(jsoncontent);
+                // fs.writeFileSync(playerPath,jsonWritable);
+                let content = xlReader(playerPath,"player stats");
 
-                // console.log(lis);
-                // j = j + 9;
+                xlsWriter(headData, lis,content, playerPath, "player stats");
             }
         }
-        // console.log(tableArray.length);
-        
     }
 
-    
-    // let stats = searchTool(scoreTable[0]).find("td");
-    // console.log(stats.text());
-    // fs.writeFileSync("InningsTable2.html",searchTool(scoreTable[1]).html());
-    // console.log(scoreTable.length);
+}
 
-    // console.log(searchTool(matcharray[1]).text().trim());
+// writes appends data to existing data and writes in the excel 
+function xlsWriter(header,lis,existingData,filepath, sheetName){
+    playerObj = {};
+    for(let i = 0; i < header.length; i++) {
+        playerObj[header[i]] = lis[i];
+    }
+    existingData.push(playerObj);
+    let newWB = xlsx.utils.book_new();
+    let newWS = xlsx.utils.json_to_sheet(existingData);
+    xlsx.utils.book_append_sheet(newWB, newWS, sheetName);
+    xlsx.writeFile(newWB, filepath);
+}
+// Reads data from excel and returns Json data 
+function xlReader(filepath, sheetName){
+    if(fs.existsSync(filepath)==false){
+        return [];
+    }
+    let wb = xlsx.readFile(filepath);
+    let excelData = wb.Sheets[sheetName];
+    let ans = xlsx.utils.sheet_to_json(excelData);
+    return ans;
 }
 
 module.exports ={
