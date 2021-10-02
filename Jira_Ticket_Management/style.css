@@ -1,0 +1,89 @@
+/* universal selector "*" */
+/* user agent stylesheet browser default */
+body{
+    /* border: 2px solid red */
+    margin: 0px;
+}
+.header-container{
+    /* border:1px solid green */
+    height: 5.2rem;
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    padding-left: 3rem;
+}
+.header-container>*{
+    height:65%;
+    background-color: rgb(96, 88, 88);
+    border-radius: 6px;
+    /* border: 1px solid red; */
+}
+.color-filter{
+    width: 40%;
+    margin-right: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    
+}
+.color-filter>*{
+    height: 45%;
+    width: 15%;
+    border-radius: 4px;
+}
+.pink{
+
+    background-color: lightpink;
+
+}
+.blue{
+    background-color: lightblue;
+    
+}
+.green{
+    background-color: lightgreen;
+    
+}
+.black{
+    background-color: black;
+    
+}
+.add-delete {
+    width: 20%;
+    display: flex;
+    /* align-items: center;
+    justify-content: space-evenly; */
+}
+.add-delete>*{
+    height: 100%;
+    width: 50%;
+    /* display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 1.8rem;
+    font-weight: 300;
+    border-radius: 4px; */
+    /* above commented part was able to handle 
+    all below code for + and cross */
+}
+.add{
+    /* background-color: yellow; */
+}
+.add,.delete{
+    /* perfectly center an element inside a div */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.fa-plus,.fa-times{
+    font-size: 2rem;
+    font-weight: 455;
+}
+.main-container{
+    /* border: 1px solid black */
+    /* vh, v2 */
+    /* 100% width of visible screen vw */
+    /* 100% height of visible screen vh */
+    height: calc(100vh - 3.5rem);
+    background-color: #f2f2f2;
+}
