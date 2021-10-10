@@ -1,11 +1,14 @@
 var uid = new ShortUniqueId();
 // console.log(uid());
+modal_container.style.display="none";
+
 
 //variables used 
 let defaultColor = "black";
 let cFilter = "";
 let deleteActive = false;
 let colors = ["pink", "blue", "green", "black"];
+let addIndicator = false;
 
 //elements 
 let mainContainer = document.querySelector(".main-container");
@@ -13,8 +16,10 @@ let textInput = document.querySelector(".task_input");
 let addDel = document.querySelector(".add-delete");
 let lock = document.querySelector(".lock");
 let unlock = document.querySelector(".unlock");
+let add = document.querySelector(".add");
 let deleteButton = document.querySelector(".delete");
 let colCode = document.querySelector(".color-filter");
+let modal_container = document.querySelector(".modal");
 
 
 // Event Listeners
@@ -28,7 +33,13 @@ textInput.addEventListener("keydown",function(event){
     }    
 })
 
+add.addEventListener("click",function(){
+    // addIndicator = !addIndicator;
+    if(addIndicator){
+        modal_container.style.display="block";
+    }
 
+})
 // filtering functinality based on particular color 
 colCode.addEventListener("click", function(event){
     let filterColor = event.target.classList[1];
