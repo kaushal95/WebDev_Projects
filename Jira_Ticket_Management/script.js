@@ -1,6 +1,6 @@
 var uid = new ShortUniqueId();
 // console.log(uid());
-modal_container.style.display="none";
+
 
 
 //variables used 
@@ -19,25 +19,38 @@ let unlock = document.querySelector(".unlock");
 let add = document.querySelector(".add");
 let deleteButton = document.querySelector(".delete");
 let colCode = document.querySelector(".color-filter");
-let modal_container = document.querySelector(".modal");
+let modal_container = document.querySelector(".main-container>.modal");
+let color_panel = document.querySelector(".color-panel");
 
 
 // Event Listeners
+color_panel.addEventListener("click", function(e){
+    let colorList = color_panel.querySelectorAll(".color-m");
+    for(let i = 0; i < colorList.length; i++){
+        // console.log(e.target, "---+=", colorList[i]);
+        colorList[i].classList.remove("selected");
+        if(e.target == colorList[i]){
+            colorList[i].classList.add("selected");
+            defaultColor = colorList[i].classList[1];
+        }
+    }
+})
 
-//
-textInput.addEventListener("keydown",function(event){
-    if(event.code == "Enter" && textInput.value){
+
+modal_container.addEventListener("keydown",function(event){
+    let input = document.querySelector(".modal-text")
+    if(event.code == "Enter" && input.value){
         let tid = uid();
-        createModal(tid, textInput.value, true);
-        textInput.value = "";
+
+        createModal(tid, input.value, true,defaultColor);
+        input.value = "";
+        modal_container.style.display = "none";
     }    
 })
 
 add.addEventListener("click",function(){
     // addIndicator = !addIndicator;
-    if(addIndicator){
         modal_container.style.display="block";
-    }
 
 })
 // filtering functinality based on particular color 
@@ -162,7 +175,7 @@ function createModal(tid, value,flag,color){
         let taskObject = {
             tid: tid,
             value: value,
-            color: nextcolor
+            color: defaultColor
         }
         tasksArr.push(taskObject);
         localStorage.setItem("tasks", JSON.stringify(tasksArr));
@@ -198,6 +211,7 @@ function filterCard(filterColor){
         let { tid, value, color } = tasks[i];
         createModal(tid,value,false,color);
     }
+    modal_container.style.display = "none";
     // get it to ui
 })();
 

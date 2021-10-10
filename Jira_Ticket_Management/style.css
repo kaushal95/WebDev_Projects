@@ -114,9 +114,10 @@ body{
     width: 30rem;
     /* background-color: lightgoldenrodyellow; */
     position: fixed;
+    display:flex;
     top: calc(50% - 7.5rem);
     left: calc(50% - 15rem);
-    display:flex;
+    
 }
 .outer-modal{
     height:100%;
