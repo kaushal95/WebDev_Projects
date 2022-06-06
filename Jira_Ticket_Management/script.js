@@ -50,7 +50,7 @@ modal_container.addEventListener("keydown",function(event){
 
 add.addEventListener("click",function(){
     // addIndicator = !addIndicator;
-        modal_container.style.display="block";
+        modal_container.style.display="flex";
 
 })
 // filtering functinality based on particular color 

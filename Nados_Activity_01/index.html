@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <title>My First hand at frontend</title>
+        <link rel="stylesheet" href="style.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
+    </head>
+    <body>
+        <div id="header">
+            <button id="addFolder">Add Folder</button>
+            <button id="addTextFile">Add Text File</button>
+            <!--  -->
+        </div>
+
+        <div id="breadcrumb">
+            <!--  -->
+            <a purpose="path" rid="-1">Root</a>
+        </div>
+        
+        <div id="container">
+            <!-- to show all files and folders -->
+
+        </div>
+        
+        <div id="app">
+            <!-- to show the apps and  -->
+            <div id="app-title-bar">
+                <div id="app-title">
+                    titile will come here
+                </div>
+                <div id="win-actions">
+                    <span class="material-icons">minimize</span>
+                    <span class="material-icons">fullscreen</span>
+                    <span class="material-icons">close</span>
+                </div>
+            </div>
+            <div id="app-menu-bar"></div>
+            <div id="app-body"></div>
+        </div>
+
+        <template id="templates">
+            <div class="folder" rid="" pid="">
+                <span action="rename">
+                    rename
+                </span>
+                <span action="delete">
+                    delete
+                </span>
+                <span action="view">
+                    view
+                </span>
+                <div purpose="name">
+
+                </div>
+            </div>
+            <div class="text-file" rid="" pid="">
+                <span action="rename">
+                    rename
+                </span>
+                <span action="delete">
+                    delete
+                </span>
+                <span action="view">
+                    view
+                </span>
+                <div purpose="name">
+
+                </div>
+            </div>
+            <a purpose="path" rid="-1"></a>
+
+        </template>
+
+
+
+        <script type="text/javascript" src="main.js"></script>
+    </body>
+</html>

@@ -33,7 +33,15 @@ let page, browserPageObj,lastPage,indc;
     await waitAndClick('input[value="warmup"]',page);
 
     let arrayChallenges = await page.$$(".ctas > .challenge-submit-btn", {delay: 100});
+    let questionArray = [];
+    for(let i = 0; i < arrayChallenges.length; i++){
 
+        let questionName = await page.evaluate(function(selector){
+            return document.querySelector(selector).innerText;
+        },arrayChallenges[i])
+        questionArray.push(questionName);
+    }
+    console.log(questionArray);
     // console.log("number of questions ",arrayChallenges.length);
     // let qSolvePromise = questionSolver(page,arrayChallenges[0], answers);
     // // for(let i = 0; i < array.length; i++){

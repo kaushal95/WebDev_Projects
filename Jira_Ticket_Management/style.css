@@ -110,11 +110,12 @@ body{
 
 }
 .modal{
+    display:flex;
+    align-items: center;
     height: 15rem;
     width: 30rem;
     /* background-color: lightgoldenrodyellow; */
     position: fixed;
-    display:flex;
     top: calc(50% - 7.5rem);
     left: calc(50% - 15rem);
     
